@@ -3,3 +3,5 @@ uploads
 outputs
 .env
 *.mp4
+*.mov
+demo-output.mp4
