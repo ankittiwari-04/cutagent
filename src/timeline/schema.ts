@@ -24,10 +24,12 @@ export const OpSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("add_clip"), trackId: z.string(), assetId: z.string(),
              start: z.number().min(0), in: z.number().min(0), out: z.number().positive() }),
   z.object({ type: z.literal("trim_clip"), clipId: z.string(), in: z.number().min(0), out: z.number().positive() }),
-  z.object({ type: z.literal("split_clip"), clipId: z.string(), at: z.number().positive() }),
+  z.object({ type: z.literal("split_clip"), clipId: z.string(), at: z.number().positive(), rightClipId: z.string().optional() }),
   z.object({ type: z.literal("delete_clip"), clipId: z.string() }),
   z.object({ type: z.literal("move_clip"), clipId: z.string(), start: z.number().min(0) }),
   z.object({ type: z.literal("set_volume"), clipId: z.string(), volume: z.number().min(0).max(2) }),
+  // remove a time range from every track and close the gap
+  z.object({ type: z.literal("ripple_delete"), start: z.number().min(0), end: z.number().positive() }),
 ]);
 
 export type Clip = z.infer<typeof ClipSchema>;

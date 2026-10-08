@@ -35,7 +35,7 @@ export function applyOps(input: Timeline, ops: Op[]): Timeline {
         const { track, i, clip } = findClip(t, op.clipId);
         if (op.at <= clip.start || op.at >= clip.start + dur(clip)) throw new Error("split point outside clip");
         const offset = op.at - clip.start;
-        const right: Clip = { ...clip, id: randomUUID(), start: op.at, in: clip.in + offset };
+        const right: Clip = { ...clip, id: op.rightClipId ?? randomUUID(), start: op.at, in: clip.in + offset };
         clip.out = clip.in + offset;
         track.clips.splice(i + 1, 0, right);
         break;
@@ -51,6 +51,35 @@ export function applyOps(input: Timeline, ops: Op[]): Timeline {
       case "set_volume":
         findClip(t, op.clipId).clip.volume = op.volume;
         break;
+      case "ripple_delete": {
+        const { start: a, end: b } = op;
+        if (b <= a) throw new Error("end must be greater than start");
+        const d = b - a;
+        for (const track of t.tracks) {
+          const next: Clip[] = [];
+          for (const c of track.clips) {
+            const cs = c.start;
+            const ce = c.start + dur(c);
+            if (ce <= a) { next.push(c); continue; }                      // entirely before the cut
+            if (cs >= b) { c.start = cs - d; next.push(c); continue; }    // entirely after: shift left
+            if (cs >= a && ce <= b) continue;                             // swallowed by the cut
+            if (cs < a && ce > b) {                                       // spans the cut: split in two
+              const right: Clip = { ...c, id: randomUUID(), start: a, in: c.in + (b - cs) };
+              c.out = c.in + (a - cs);
+              next.push(c, right);
+            } else if (cs < a) {                                          // overlaps the cut's left edge: trim tail
+              c.out = c.in + (a - cs);
+              next.push(c);
+            } else {                                                      // overlaps the cut's right edge: trim head
+              c.in = c.in + (b - cs);
+              c.start = a;
+              next.push(c);
+            }
+          }
+          track.clips = next;
+        }
+        break;
+      }
     }
   }
   t.version = input.version + 1;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "tsx --test src/timeline/*.test.ts",
+    "test": "tsx --test src/*/*.test.ts",
     "analyze": "tsx src/analysis/cli.ts",
     "worker": "tsx src/workers/analysis.ts",
     "enqueue": "tsx src/enqueue.ts",
