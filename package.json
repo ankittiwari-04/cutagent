@@ -8,7 +8,9 @@
     "analyze": "tsx src/analysis/cli.ts",
     "worker": "tsx src/workers/analysis.ts",
     "enqueue": "tsx src/enqueue.ts",
-    "api": "tsx src/server.ts"
+    "api": "tsx src/server.ts",
+    "render-worker": "tsx src/workers/render.ts",
+    "bench": "tsx src/bench.ts"
   },
   "keywords": [],
   "author": "",

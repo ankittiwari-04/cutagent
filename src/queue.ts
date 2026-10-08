@@ -1,4 +1,4 @@
-import { Queue } from "bullmq";
+import { Queue, FlowProducer } from "bullmq";
 import IORedis from "ioredis";
 
 export const connection = new IORedis({
@@ -7,4 +7,8 @@ export const connection = new IORedis({
   maxRetriesPerRequest: null,
 });
 
+export const CHUNK_QUEUE = "render-chunk";
+export const STITCH_QUEUE = "render-stitch";
+
 export const analysisQueue = new Queue("analysis", { connection });
+export const flowProducer = new FlowProducer({ connection });
