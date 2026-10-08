@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# usage: bash scripts/demo.sh clip.mp4
+# usage: bash scripts/demo.sh clip.mov
 # needs the analysis worker, the API and a render worker running
 set -euo pipefail
 API=${API:-http://localhost:3000}
@@ -30,7 +30,7 @@ curl -s -X POST $API/projects/$P/edit/remove-silences -H 'content-type: applicat
   | j '`removed ${o.removedSeconds}s with ${o.ops.length} ripple_delete ops -> version ${o.timeline.version}`'
 
 say "Export: chunks render in parallel, then get stitched"
-E=$(curl -s -X POST $API/projects/$P/exports -H 'content-type: application/json' -d '{"chunkSeconds":5}' | j 'o.exportId')
+E=$(curl -s -X POST $API/projects/$P/exports -H 'content-type: application/json' -d '{"chunkSeconds":2}' | j 'o.exportId')
 while true; do
   S=$(curl -s $API/exports/$E)
   echo "$S" | j '`${o.status}   ${o.done_chunks}/${o.total_chunks} chunks   ${o.progress}%`'

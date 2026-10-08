@@ -2,6 +2,8 @@
 
 Backend for an AI-assisted video editor: upload footage, analyze it with FFmpeg, edit a versioned timeline through validated operations, and export it with a parallel, restart-safe render pipeline.
 
+**Demo video (about 1 minute):** https://youtu.be/yuDgP8hf36w
+
 > **Status:** working backend prototype. There is no UI and no LLM yet. Edits come from a rule-based planner that emits the same typed operations an LLM agent would; that operation layer is the integration point for one. See [Limitations](#limitations).
 
 ## What it does
@@ -111,6 +113,7 @@ Measured run on the benchmark video (24 chunks): the worker was killed with 8 of
 - No LLM agent yet. The planner is rule-based (silence removal only).
 - Export renders the first video track as a back-to-back sequence of clips. Gaps are closed, and there is no compositing, no audio mixing and no volume or transitions yet.
 - Fixed output format (1280x720, 30 fps).
+- Exporting 4K 60 fps HEVC phone footage directly is slow: a 13 s edit of a 19 s clip took 103 s with 4 workers (12 chunks), because every chunk job decodes the 4K source. I have not profiled it yet. Proxy generation and keyframe-aligned seeking are on the roadmap.
 - Local disk instead of object storage, and no authentication.
 - No frontend.
 - Tests cover the pure logic (timeline operations, planners, export planning). The queue, database and FFmpeg paths are exercised by the benchmark and recovery scripts rather than automated integration tests.
@@ -161,4 +164,5 @@ Tests: `npm test`
 - Object storage instead of local disk
 - Live progress over SSE
 - Multi-track rendering and audio mixing
+- Proxy transcodes for preview and keyframe-aligned chunk seeking (faster export of high-resolution footage)
 - Dockerfile and docker-compose for one-command setup
