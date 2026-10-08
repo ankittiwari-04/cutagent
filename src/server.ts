@@ -1,3 +1,4 @@
+import timelineRoutes from "./routes/timeline.js";
 import Fastify from "fastify";
 import multipart from "@fastify/multipart";
 import { createWriteStream } from "node:fs";
@@ -76,4 +77,5 @@ app.get<{ Params: { id: string } }>("/projects/:id/assets", async (req, reply) =
   return rows;
 });
 
+await app.register(timelineRoutes);
 await app.listen({ port: 3000, host: "0.0.0.0" });
