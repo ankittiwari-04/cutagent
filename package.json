@@ -10,7 +10,8 @@
     "enqueue": "tsx src/enqueue.ts",
     "api": "tsx src/server.ts",
     "render-worker": "tsx src/workers/render.ts",
-    "bench": "tsx src/bench.ts"
+    "bench": "tsx src/bench.ts",
+    "recovery-demo": "tsx src/recovery-demo.ts"
   },
   "keywords": [],
   "author": "",
